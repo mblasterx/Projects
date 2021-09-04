@@ -41,21 +41,6 @@ def hand_rank(hand):
     '''
     Returns a tuple indicating the ranking of a hand 
     '''
-# straight(ranks): returns True if the hand is a straight.
-# flush(hand):     returns True if the hand is a flush.
-# kind(n, ranks):  returns the first rank that the hand has
-#                  exactly n of. For A hand with 4 sevens 
-#                  this function would return 7.
-# two_pair(ranks): if there is a two pair, this function 
-#                  returns their corresponding ranks as a 
-#                  tuple. For example, a hand with 2 twos
-#                  and 2 fours would cause this function
-#                  to return (4, 2).
-# card_ranks(hand) returns an ORDERED tuple of the ranks 
-#                  in a hand (where the order goes from
-#                  highest to lowest rank). 
-#
-
     ranks = card_ranks(hand)
     if straight(ranks) and flush(hand):
         return (8, max(ranks))  # have to make an exception for A,2,3,4,5
@@ -110,6 +95,51 @@ def flush(hand):
     suits = [s for r,s in hand]
     return len(set(suits)) == 1 
 
+
+
+def deal(numHands, numCards = 5, deck=[r+s for r in '23456789TJQKA' for s in 'cdhs'] ):
+    from random import shuffle
+    shuffle(deck)
+    return [deck[numCards*i:numCards*(i+1)] for i in range(numHands)]
+
+def best_hand(hand):
+    "From a 7-card hand, return the best 5 card hand."
+    return max(itertools.combinations(hand,5), key=hand_rank)
+    # Your code here
+
+
+def best_wild_hand(hand):
+    "Try all values for jokers in all 5-card selections."
+    hands = set(best_hand(h)
+                for h in itertools.product(*map(replacements,hand)))    # all the possible 5 hand combinations using jokers 
+    return max(hands, key=hand_rank)
+
+def replacements(card:str):
+    '''Return a list of the possible replacements for a card
+    There will be more than 1 only for wild cards like jokers 
+    '''
+    blackDeck, redDeck = [r+s for r in ALLRANKS for s in 'cs'], [r+s for r in ALLRANKS for s in 'dh']
+    if card == '?b':
+        return blackDeck
+    elif card == '?r':
+        return redDeck
+    else:
+        return [card]
+
+
+
+
+
+
+def test_best_hand():
+    assert (sorted(best_hand("6c 7c 8c 9c Tc 5c Js".split()))
+            == ['6c', '7c', '8c', '9c', 'Tc'])
+    assert (sorted(best_hand("Td Tc Th 7c 7d 8c 8s".split()))
+            == ['8c', '8s', 'Tc', 'Td', 'Th'])
+    assert (sorted(best_hand("Jd Tc Th 7c 7d 7s 7h".split()))
+            == ['7c', '7d', '7h', '7s', 'Jd'])
+    return 'test_best_hand passes'
+
 def test():
     sf = "6c 7c 8c 9c Tc".split()
     fk = "9c 9d 9h 9s 7d".split()
@@ -146,58 +176,6 @@ def test():
     
     return "tests pass"
 
-def deal(numHands, numCards = 5, deck=[r+s for r in '23456789TJQKA' for s in 'cdhs'] ):
-    from random import sample
-    hands = []
-    for i in range(numHands):
-        hand = []
-        for j in range(numCards):
-            card = sample(deck,1)
-            hand += card 
-            deck.remove(card[0])
-        hands.append(hand)
-
-    return hands
-
-def deal(numHands, numCards = 5, deck=[r+s for r in '23456789TJQKA' for s in 'cdhs'] ):
-    from random import shuffle
-    shuffle(deck)
-    return [deck[numCards*i:numCards*(i+1)] for i in range(numHands)]
-
-def best_hand(hand):
-    "From a 7-card hand, return the best 5 card hand."
-    return max(itertools.combinations(hand,5), key=hand_rank)
-    # Your code here
-
-def test_best_hand():
-    assert (sorted(best_hand("6c 7c 8c 9c Tc 5c Js".split()))
-            == ['6c', '7c', '8c', '9c', 'Tc'])
-    assert (sorted(best_hand("Td Tc Th 7c 7d 8c 8s".split()))
-            == ['8c', '8s', 'Tc', 'Td', 'Th'])
-    assert (sorted(best_hand("Jd Tc Th 7c 7d 7s 7h".split()))
-            == ['7c', '7d', '7h', '7s', 'Jd'])
-    return 'test_best_hand passes'
-
-def best_wild_hand(hand):
-    "Try all values for jokers in all 5-card selections."
-    hands = set(best_hand(h)
-                for h in itertools.product(*map(replacements,hand)))    # all the possible 5 hand combinations using jokers 
-    return max(hands, key=hand_rank)
-
-def replacements(card:str):
-    '''Return a list of the possible replacements for a card
-    There will be more than 1 only for wild cards like jokers 
-    '''
-    blackDeck, redDeck = [r+s for r in ALLRANKS for s in 'cs'], [r+s for r in ALLRANKS for s in 'dh']
-    if card == '?b':
-        return blackDeck
-    elif card == '?r':
-        return redDeck
-    else:
-        return [card]
-
-    # Your code here
-
 def test_best_wild_hand():
     assert (sorted(best_wild_hand("6c 7c 8c 9c Tc 5c ?b".split()))
              == ['7c', '8c', '9c', 'Jc', 'Tc'])
@@ -208,4 +186,6 @@ def test_best_wild_hand():
     return 'test_best_wild_hand passes'
 
 
-print(test_best_wild_hand())
+test()
+test_best_hand()
+test_best_wild_hand()
