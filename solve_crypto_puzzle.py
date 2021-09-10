@@ -23,6 +23,7 @@ def valid(f):
     except ArithmeticError:
         return False
 
+# MODIFY HERE THE STRINGS YOU WANT THE PUZZLE TO GO
 solve('ODD+ ANY == EVEN')
 
 # import cProfile

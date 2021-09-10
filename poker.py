@@ -5,10 +5,6 @@
 #     '''
 #     Poker game
 #     '''
-
-#     def __init__(self, hands):
-#         '''Return the best hand
-#         '''
     
 import itertools
 
@@ -126,10 +122,8 @@ def replacements(card:str):
     else:
         return [card]
 
-
-
-
-
+'''VARIOUS TESTS HERE 
+'''
 
 def test_best_hand():
     assert (sorted(best_hand("6c 7c 8c 9c Tc 5c Js".split()))
@@ -186,6 +180,6 @@ def test_best_wild_hand():
     return 'test_best_wild_hand passes'
 
 
-test()
-test_best_hand()
-test_best_wild_hand()
+print(test())
+print(test_best_hand())
+# test_best_wild_hand()
