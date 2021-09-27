@@ -1,6 +1,9 @@
 import random
 
 def check_if_sum_is_in_the_array(ary, sum):
+    '''Checks is any two elements in the array sum up to a given number
+    Returns a tuple with the Boolean and the values that sum up, or just a Boolean
+    '''
     complements = set()
     for val in ary:
         if sum-val in complements: return (True, val, sum-val)
